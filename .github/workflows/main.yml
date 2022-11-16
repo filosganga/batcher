@@ -40,11 +40,8 @@ jobs:
           java-version: "11"
           distribution: "adopt"
       - uses: coursier/cache-action@v6
-      - run: sbt scalafmtCheckAll
-      - run: sbt "scalafixAll --check"
-      - run: sbt compile
+      - run: sbt "scalafmtCheckAll;scalafixAll --check"
       - run: sbt Test/compile
-      - run: sbt IntegrationTest/compile
       - name: Compress targets
         run: |
           shopt -s globstar
