@@ -1,0 +1,10 @@
+.bsp/
+.bloop/
+target/
+metals.sbt
+.metals/
+.history/
+.vscode/
+.js/
+.jvm/
+.native/
