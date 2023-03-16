@@ -17,7 +17,7 @@ ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
 
 lazy val root = project
   .in(file("."))
-  .aggregate(batcher.js, batcher.jvm)
+  .aggregate(batcher.js, batcher.jvm, batcher.native)
   .settings(
     publish := {},
     publishLocal := {}
