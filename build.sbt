@@ -1,7 +1,7 @@
 val catsVersion = "2.9.0"
-val catsEffectVersion = "3.4.0"
-val fs2Version = "3.3.0"
-val munitVersion = "1.0.0-M6"
+val catsEffectVersion = "3.4.8"
+val fs2Version = "3.6.1"
+val munitVersion = "1.0.0-M7"
 val munitCatsEffectVersion = "2.0.0-M3"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
@@ -23,7 +23,7 @@ lazy val root = project
     publishLocal := {}
   )
 
-lazy val batcher = crossProject(JSPlatform, JVMPlatform)
+lazy val batcher = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/batcher"))
   .settings(
