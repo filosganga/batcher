@@ -26,7 +26,7 @@ jobs:
           java-version: "11"
           distribution: "adopt"
       - uses: coursier/cache-action@v6
-      - run: sbt update
+      - run: sbt +update
       - uses: scalacenter/sbt-dependency-submission@v2
 
   build:
@@ -41,7 +41,7 @@ jobs:
           distribution: "adopt"
       - uses: coursier/cache-action@v6
       - run: sbt "scalafmtCheckAll;scalafixAll --check"
-      - run: sbt Test/compile
+      - run: sbt +Test/compile
       - name: Compress targets
         run: |
           shopt -s globstar
@@ -71,7 +71,7 @@ jobs:
           name: targets
       - name: Expand targets
         run: tar -xvzf targets.tar.gz
-      - run: sbt Test/test
+      - run: sbt +Test/test
       - uses: dorny/test-reporter@v1.5.0
         if: success() || failure() # run this step even if previous step failed
         with:
