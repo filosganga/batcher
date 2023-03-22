@@ -40,7 +40,7 @@ jobs:
           distribution: "temurin"
           java-version: "17"
       - uses: coursier/cache-action@v6
-      - run: sbt "scalafmtCheckAll;scalafixAll --check"
+      - run: sbt "scalafmtCheckAll;headerCheckAll;scalafixAll --check"
       - run: sbt +Test/compile
       - name: Compress targets
         run: |

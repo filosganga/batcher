@@ -10,6 +10,7 @@ ThisBuild / scalaVersion := "3.2.2"
 ThisBuild / crossScalaVersions ++= List("2.13.10", "2.12.17")
 ThisBuild / organization := "com.filippodeluca"
 ThisBuild / organizationName := "Filippo De Luca"
+ThisBuild / startYear := Some(2023)
 
 ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.6.0"
 ThisBuild / semanticdbEnabled := true
