@@ -1,6 +1,6 @@
 # Batcher Library
 
-The Batcher library provides a convenient way to optimize the performance of requests by batching them together, controlling concurrency, and handling errors in a consistent way.
+The Batcher library provides a convenient way to optimize the performance of requests by batching them together, controlling concurrency, and consistently handling errors.
 
 It is available in Scala-JS, Scala-Native, and Scala via Maven Central.
 
@@ -12,14 +12,14 @@ It is available in Scala-JS, Scala-Native, and Scala via Maven Central.
 
 - Lingering: The library allows you to specify a duration for how long the batcher should wait before sending a batch of requests to the server. This can help reduce the number of unnecessary requests by allowing time for other requests to be added to the batch.
 
-- Result caching: The library caches the results of previous requests, so if the same request is made again, it can be returned immediately without needing to execute the request again.
+- Result caching: The library caches the results of in-flight requests, so if the same request is made again, it can be returned immediately without needing to execute the request again.
 
 
 ## Installation
 To use the Batcher library in your project, add the following dependency to your `build.sbt` file:
 
 ````sbt
-libraryDependencies += "com.filippodeluca.batcher" %% "batcher" % "<latest-version>"
+libraryDependencies += "com.filippodeluca" %% "batcher" % "<latest-version>"
 ````
 
 Replace `latest-version` with the latest version of the library available on Maven Central.
@@ -115,4 +115,4 @@ object Example extends IOApp.Simple {
 
 ````
 
-This example first generates two vectors of 100 random integers. Then, it pairs up the corresponding elements of both vectors using the zip method and passes them to the `Batcher.single` method, which sums them. Finally, it prints the result.
+This example first generates two vectors of 100 random integers. Then, it pairs up the corresponding elements of both vectors using the zip method and passes them to the `Batcher.single` method, which sums them up. Finally, it prints the result.
