@@ -108,7 +108,7 @@ jobs:
         with:
           name: targets
       - run: tar -xvzf targets.tar.gz
-      - run: sbt +test
+      - run: sbt +IntegrationTest/test
       - uses: dorny/test-reporter@v1
         # run this step even if previous step failed
         if: success() || failure()
