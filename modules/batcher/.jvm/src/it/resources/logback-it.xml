@@ -1,0 +1,18 @@
+<configuration>
+  <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
+  <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.out</target>
+    <encoder>
+      <pattern>%date{ISO8601} %-5level[%thread] %logger{5} %X{} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="org.apache.http" level="OFF" />
+  <logger name="software.amazon.awssdk.profiles.internal.ProfileFileReader" level="OFF" />
+  <logger name="com.filippodeluca.batcher" level="DEBUG" />
+
+  <root level="INFO">
+    <appender-ref ref="Console"/>
+  </root>
+</configuration>

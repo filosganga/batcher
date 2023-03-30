@@ -80,10 +80,30 @@ lazy val batcher = crossProject(JSPlatform, JVMPlatform, NativePlatform)
       "org.typelevel" %%% "cats-core" % catsVersion,
       "org.typelevel" %%% "cats-effect" % catsEffectVersion,
       "co.fs2" %%% "fs2-core" % fs2Version,
-      "org.scalameta" %%% "munit" % munitVersion % Test,
-      "org.typelevel" %%% "munit-cats-effect" % munitCatsEffectVersion % Test
+      "org.scalameta" %%% "munit" % munitVersion % s"$Test;$IntegrationTest",
+      "org.typelevel" %%% "munit-cats-effect" % munitCatsEffectVersion % s"$Test;$IntegrationTest"
     )
   )
   .jsSettings(
     scalaJSUseMainModuleInitializer := false
+  )
+  .jsSettings(inConfig(IntegrationTest)(ScalaJSPlugin.testConfigSettings): _*)
+  // add the `shared` folder to source directories
+  .settings(
+    IntegrationTest / unmanagedSourceDirectories ++=
+      CrossType.Full.sharedSrcDir(baseDirectory.value, IntegrationTest.name).toSeq
+  )
+  .configs(IntegrationTest)
+  .settings(inConfig(IntegrationTest)(Defaults.testSettings))
+  .jvmSettings(
+    IntegrationTest / fork := true,
+    IntegrationTest / javaOptions ++= Seq(
+      "-Dlogback.configurationFile=logback-it.xml",
+      "-Dsoftware.amazon.awssdk.http.async.service.impl=software.amazon.awssdk.http.nio.netty.NettySdkAsyncHttpService"
+    ),
+    libraryDependencies ++= List(
+      "org.systemfw" %% "dynosaur-core" % "0.5.0" % IntegrationTest,
+      "software.amazon.awssdk" % "dynamodb" % "2.14.15" % IntegrationTest,
+      "ch.qos.logback" % "logback-classic" % "1.4.6" % IntegrationTest
+    )
   )
