@@ -5,6 +5,3 @@ metals.sbt
 .metals/
 .history/
 .vscode/
-.js/
-.jvm/
-.native/

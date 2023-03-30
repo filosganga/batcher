@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  dynamodb:
+    image: amazon/dynamodb-local:1.21.0
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb"
