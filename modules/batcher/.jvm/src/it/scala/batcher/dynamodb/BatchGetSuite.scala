@@ -1,35 +1,32 @@
 package com.filippodeluca.batcher
 package dynamodb
 
-import scala.jdk.CollectionConverters._
+import java.net.URI
+
 import scala.concurrent.duration._
 
+import cats.data.Chain
 import cats.syntax.all._
 import cats.effect._
-import cats.effect.syntax.all._
-import cats.effect.std.Env
-import cats.effect.std.UUIDGen
+import cats.effect.std.{Env, UUIDGen}
 import fs2._
 
-import dynosaur.DynamoValue
-import software.amazon.awssdk.services.dynamodb.model.{
-  BatchGetItemRequest,
-  BatchGetItemResponse,
-  BatchWriteItemRequest
-}
+import software.amazon.awssdk.services.dynamodb.model.{BatchGetItemRequest, BatchWriteItemRequest}
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
-import java.net.URI
-import software.amazon.awssdk.services.dynamodb.model.KeysAndAttributes
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue
-import cats.effect.std.MapRef
-import software.amazon.awssdk.services.dynamodb.model.AttributeDefinition
-import software.amazon.awssdk.services.dynamodb.model.KeySchemaElement
-import software.amazon.awssdk.services.dynamodb.model.TableDescription
-import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType
-import software.amazon.awssdk.services.dynamodb.model.KeyType
-import software.amazon.awssdk.services.dynamodb.model.WriteRequest
-import cats.data.Chain
-import software.amazon.awssdk.services.dynamodb.model.BillingMode
+import software.amazon.awssdk.services.dynamodb.model.{
+  KeysAndAttributes,
+  AttributeValue,
+  AttributeDefinition,
+  KeySchemaElement,
+  TableDescription,
+  ScalarAttributeType,
+  KeyType,
+  WriteRequest,
+  BillingMode
+}
+
+import JdkConverters._
+import MapCompat._
 
 class BatchGetSuite extends munit.CatsEffectSuite {
 
@@ -203,9 +200,9 @@ class BatchGetSuite extends munit.CatsEffectSuite {
       )
       getItemBatcher <- batchGetItemBatcher(dynamoDbClient, Map(table.tableName -> List("id")))
       putItemBatcher <- batchPutItemBatcher(dynamoDbClient)
-    } yield (dynamoDbClient, table, getItemBatcher, putItemBatcher)
+    } yield (table, getItemBatcher, putItemBatcher)
   }.test("should be able to store and retrieve items from one table") {
-    case (dynamoDbClient, table, getItemBatcher, putItemBatcher) =>
+    case (table, getItemBatcher, putItemBatcher) =>
       val items = List.range(0, 1000).map { idx =>
         Map(
           "id" -> AttributeValue.builder.s(s"test-$idx").build,

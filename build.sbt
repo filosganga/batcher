@@ -3,6 +3,8 @@ val catsEffectVersion = "3.4.8"
 val fs2Version = "3.6.1"
 val munitVersion = "1.0.0-M7"
 val munitCatsEffectVersion = "2.0.0-M3"
+val awsSdkVersion = "2.14.15"
+val logbackVersion = "1.4.6"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
@@ -75,7 +77,12 @@ lazy val batcher = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(
     name := "batcher",
     scalacOptions -= "-Xfatal-warnings",
-    scalacOptions += "-Xsource:3",
+    scalacOptions ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, _)) => List("-Xsource:3")
+        case _ => List.empty
+      }
+    },
     libraryDependencies ++= List(
       "org.typelevel" %%% "cats-core" % catsVersion,
       "org.typelevel" %%% "cats-effect" % catsEffectVersion,
@@ -102,8 +109,7 @@ lazy val batcher = crossProject(JSPlatform, JVMPlatform, NativePlatform)
       "-Dsoftware.amazon.awssdk.http.async.service.impl=software.amazon.awssdk.http.nio.netty.NettySdkAsyncHttpService"
     ),
     libraryDependencies ++= List(
-      "org.systemfw" %% "dynosaur-core" % "0.5.0" % IntegrationTest,
-      "software.amazon.awssdk" % "dynamodb" % "2.14.15" % IntegrationTest,
-      "ch.qos.logback" % "logback-classic" % "1.4.6" % IntegrationTest
+      "software.amazon.awssdk" % "dynamodb" % awsSdkVersion % IntegrationTest,
+      "ch.qos.logback" % "logback-classic" % logbackVersion % IntegrationTest
     )
   )
