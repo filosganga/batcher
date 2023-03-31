@@ -68,7 +68,9 @@ lazy val root = project
   .aggregate(batcher.js, batcher.jvm, batcher.native)
   .settings(
     publish := {},
-    publishLocal := {}
+    publishLocal := {},
+    publishTo := None,
+    publishArtifact := false
   )
 
 lazy val batcher = crossProject(JSPlatform, JVMPlatform, NativePlatform)
