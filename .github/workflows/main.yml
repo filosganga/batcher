@@ -118,7 +118,7 @@ jobs:
           max-annotations: 10
           fail-on-error: true
           name: integration-tests-report
-          path: target/it-reports/*.xml
+          path: "**/target/it-reports/*.xml"
           reporter: java-junit
 
   publish:
