@@ -72,7 +72,7 @@ jobs:
       - name: Expand targets
         run: tar -xvzf targets.tar.gz
       - run: sbt +Test/test
-      - uses: dorny/test-reporter@v1.5.0
+      - uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
           list-suites: "all"
