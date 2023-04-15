@@ -62,6 +62,7 @@ ThisBuild / credentials ++= {
     password
   )
 }.toList
+ThisBuild / versionScheme := Some("semver-spec")
 
 lazy val root = project
   .in(file("."))
