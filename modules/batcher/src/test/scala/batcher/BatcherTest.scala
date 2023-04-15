@@ -19,6 +19,7 @@ package com.filippodeluca.batcher
 import scala.concurrent.duration._
 
 import cats.effect._
+import cats.effect.testkit.TestControl
 import cats.syntax.all._
 
 class BatcherTest extends munit.CatsEffectSuite {
@@ -121,16 +122,13 @@ class BatcherTest extends munit.CatsEffectSuite {
         count.update(_ + 1).as(keys.map(_.size))
       }
 
-      batcher.use { batcher =>
-        val result = List(
+      TestControl.executeEmbed(batcher.use { batcher =>
+        List(
           batcher.single("foo"),
           batcher.single("bar"),
           batcher.single("baz").delayBy(75.milliseconds)
         ).parSequence
-
-        result >> count.get.assertEquals(2)
-
-      }
+      }) >> count.get.assertEquals(2)
     }
   }
 
@@ -156,18 +154,14 @@ class BatcherTest extends munit.CatsEffectSuite {
         (increase *> IO.sleep(50.milliseconds) *> decrease).as(keys.map(_.size))
       }
 
-      batcher.use { batcher =>
-
-        val result = (0 until 100)
+      TestControl.executeEmbed(batcher.use { batcher =>
+        (0 until 100)
           .map { index =>
             batcher.single(s"test-$index")
           }
           .toList
           .parSequence
-
-        result >> count.get.map(_._2).assertEquals(maxConcurrency)
-
-      }
+      }) >> count.get.map(_._2).assertEquals(maxConcurrency)
     }
   }
 }
