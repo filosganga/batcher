@@ -1,4 +1,4 @@
-name: main
+name: ci
 
 on:
   push:
@@ -15,23 +15,8 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  update-dependencies:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: "temurin"
-          java-version: "17"
-      - uses: coursier/cache-action@v6
-      - run: sbt +update
-      - uses: scalacenter/sbt-dependency-submission@v2
-
   build:
     runs-on: ubuntu-latest
-    needs: update-dependencies
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
@@ -40,17 +25,12 @@ jobs:
           distribution: "temurin"
           java-version: "17"
       - uses: coursier/cache-action@v6
-      - run: sbt "scalafmtCheckAll;headerCheckAll;scalafixAll --check"
-      - run: sbt +Test/compile
-      - name: Compress targets
-        run: |
-          shopt -s globstar
-          tar -cvzf targets.tar.gz **/target/**
-      - name: Upload targets
-        uses: actions/upload-artifact@v3
+      - run: sbt "scalafmtCheckAll;headerCheckAll;+Test/compile;scalafixAll --check"
+      - uses: scalacenter/sbt-dependency-submission@v2
+      - uses: alehechka/upload-tartifact@v2
         with:
           name: targets
-          path: targets.tar.gz
+          path: "**/target/**"
           if-no-files-found: error
           retention-days: 1
 
@@ -65,12 +45,9 @@ jobs:
           distribution: "temurin"
           java-version: "17"
       - uses: coursier/cache-action@v6
-      - name: Download targets
-        uses: actions/download-artifact@v3
+      - uses: alehechka/download-tartifact@v2
         with:
           name: targets
-      - name: Expand targets
-        run: tar -xvzf targets.tar.gz
       - run: sbt +Test/test
       - uses: dorny/test-reporter@v1
         if: success() || failure()
@@ -104,10 +81,9 @@ jobs:
           java-version: "17"
           distribution: "temurin"
       - uses: coursier/cache-action@v6
-      - uses: actions/download-artifact@v3
+      - uses: alehechka/download-tartifact@v2
         with:
           name: targets
-      - run: tar -xvzf targets.tar.gz
       - run: sbt +IntegrationTest/test
       - uses: dorny/test-reporter@v1
         # run this step even if previous step failed
@@ -136,10 +112,9 @@ jobs:
           java-version: "17"
           distribution: "temurin"
       - uses: coursier/cache-action@v6
-      - uses: actions/download-artifact@v3
+      - uses: alehechka/download-tartifact@v2
         with:
           name: targets
-      - run: tar -xvzf targets.tar.gz
       - run: git fetch --tags
       - run: git status
       - name: Bump version and push tag
