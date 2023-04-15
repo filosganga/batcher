@@ -43,44 +43,34 @@ ThisBuild / scmInfo := Some(
   )
 )
 
-lazy val noPublishSettings = List(
-  publish := {},
-  publishLocal := {},
-  publishTo := None,
-  publishArtifact := false
-)
-
-lazy val publishSettings = List(
-  pomIncludeRepository := { _ => false },
-  publishTo := {
-    val nexus = "https://s01.oss.sonatype.org/"
-    if (isSnapshot.value)
-      Some("snapshots" at nexus + "content/repositories/snapshots")
-    else Some("releases" at nexus + "service/local/staging/deploy/maven2")
-  },
-  publishMavenStyle := true,
-  credentials ++= {
-    for {
-      usr <- sys.env.get("SONATYPE_USER")
-      password <- sys.env.get("SONATYPE_PASS")
-    } yield Credentials(
-      "Sonatype Nexus Repository Manager",
-      "s01.oss.sonatype.org",
-      usr,
-      password
-    )
-  }.toList
-)
+ThisBuild / pomIncludeRepository := { _ => false }
+ThisBuild / publishTo := {
+  val nexus = "https://s01.oss.sonatype.org/"
+  if (isSnapshot.value)
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
+}
+ThisBuild / publishMavenStyle := true
+ThisBuild / credentials ++= {
+  for {
+    usr <- sys.env.get("SONATYPE_USER")
+    password <- sys.env.get("SONATYPE_PASS")
+  } yield Credentials(
+    "Sonatype Nexus Repository Manager",
+    "s01.oss.sonatype.org",
+    usr,
+    password
+  )
+}.toList
 
 lazy val root = project
   .in(file("."))
   .aggregate(batcher.js, batcher.jvm, batcher.native)
-  .settings(noPublishSettings)
+  .settings(publish / skip := true)
 
 lazy val batcher = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/batcher"))
-  .settings(publishSettings)
   .settings(
     name := "batcher",
     scalacOptions -= "-Xfatal-warnings",
