@@ -12,3 +12,4 @@ jobs:
         with:
           branches: main
           github-token: ${{secrets.BOT_GITHUB_TOKEN }}
+          other-args: '--add-labels'
