@@ -84,6 +84,7 @@ lazy val batcher = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     libraryDependencies ++= List(
       "org.typelevel" %%% "cats-core" % catsVersion,
       "org.typelevel" %%% "cats-effect" % catsEffectVersion,
+      "org.typelevel" %%% "cats-effect-testkit" % catsEffectVersion % Test,
       "co.fs2" %%% "fs2-core" % fs2Version,
       "org.scalameta" %%% "munit" % munitVersion % s"$Test;$IntegrationTest",
       "org.typelevel" %%% "munit-cats-effect" % munitCatsEffectVersion % s"$Test;$IntegrationTest"
