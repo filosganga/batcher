@@ -102,11 +102,13 @@ lazy val batcher = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.testSettings))
   .jvmSettings(
-    IntegrationTest / fork := true,
-    IntegrationTest / javaOptions ++= Seq(
-      "-Dlogback.configurationFile=logback-it.xml",
-      "-Dsoftware.amazon.awssdk.http.async.service.impl=software.amazon.awssdk.http.nio.netty.NettySdkAsyncHttpService"
-    ),
+    IntegrationTest / testOptions += Tests.Setup(() => {
+      sys.props.update("logback.configurationFile", "logback-it.xml")
+      sys.props.update(
+        "software.amazon.awssdk.http.async.service.impl",
+        "software.amazon.awssdk.http.nio.netty.NettySdkAsyncHttpService"
+      )
+    }),
     libraryDependencies ++= List(
       "software.amazon.awssdk" % "dynamodb" % awsSdkVersion % IntegrationTest,
       "ch.qos.logback" % "logback-classic" % logbackVersion % IntegrationTest
