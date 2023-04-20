@@ -24,8 +24,26 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "17"
-      - uses: coursier/cache-action@v6
-      - run: sbt "scalafmtCheckAll;headerCheckAll;+Test/compile;scalafixAll --check"
+      - name: Restore dependencies
+        id: cache-restore
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            ~/.ivy2/cache
+            ~/.sbt
+          key: ${{ runner.os }}-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
+      - name: Update dependencies
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+        run: sbt update
+      - name: Cache dependencies
+        uses: actions/cache/save@v3
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+        with:
+          path: |
+            ~/.ivy2/cache
+            ~/.sbt
+          key: ${{ runner.os }}-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
+      - run: sbt "+scalafmtCheckAll;+headerCheckAll;+Test/compile;+scalafixAll --check"
       - uses: scalacenter/sbt-dependency-submission@v2
       - uses: alehechka/upload-tartifact@v2
         with:
@@ -44,7 +62,14 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "17"
-      - uses: coursier/cache-action@v6
+      - name: Restore dependencies
+        id: cache-restore
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            ~/.ivy2/cache
+            ~/.sbt
+          key: ${{ runner.os }}-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
       - uses: alehechka/download-tartifact@v2
         with:
           name: targets
@@ -80,7 +105,14 @@ jobs:
         with:
           java-version: "17"
           distribution: "temurin"
-      - uses: coursier/cache-action@v6
+      - name: Restore dependencies
+        id: cache-restore
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            ~/.ivy2/cache
+            ~/.sbt
+          key: ${{ runner.os }}-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
       - uses: alehechka/download-tartifact@v2
         with:
           name: targets
@@ -111,7 +143,14 @@ jobs:
         with:
           java-version: "17"
           distribution: "temurin"
-      - uses: coursier/cache-action@v6
+      - name: Restore dependencies
+        id: cache-restore
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            ~/.ivy2/cache
+            ~/.sbt
+          key: ${{ runner.os }}-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
       - uses: alehechka/download-tartifact@v2
         with:
           name: targets
