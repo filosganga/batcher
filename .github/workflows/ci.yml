@@ -31,7 +31,7 @@ jobs:
           path: |
             ~/.ivy2/cache
             ~/.sbt
-          key: ${{ runner.os }}-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
+          key: sbt-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
       - name: Update dependencies
         if: steps.cache-restore.outputs.cache-hit != 'true'
         run: sbt update
@@ -42,7 +42,7 @@ jobs:
           path: |
             ~/.ivy2/cache
             ~/.sbt
-          key: ${{ runner.os }}-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
+          key: sbt-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
       - run: sbt "+scalafmtCheckAll;+headerCheckAll;+Test/compile;+scalafixAll --check"
       - uses: scalacenter/sbt-dependency-submission@v2
       - uses: alehechka/upload-tartifact@v2
@@ -69,7 +69,7 @@ jobs:
           path: |
             ~/.ivy2/cache
             ~/.sbt
-          key: ${{ runner.os }}-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
+          key: sbt-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
       - uses: alehechka/download-tartifact@v2
         with:
           name: targets
@@ -112,7 +112,7 @@ jobs:
           path: |
             ~/.ivy2/cache
             ~/.sbt
-          key: ${{ runner.os }}-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
+          key: sbt-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
       - uses: alehechka/download-tartifact@v2
         with:
           name: targets
@@ -150,7 +150,7 @@ jobs:
           path: |
             ~/.ivy2/cache
             ~/.sbt
-          key: ${{ runner.os }}-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
+          key: sbt-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
       - uses: alehechka/download-tartifact@v2
         with:
           name: targets
