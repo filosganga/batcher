@@ -34,7 +34,7 @@ jobs:
           key: sbt-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
       - name: Update dependencies
         if: steps.cache-restore.outputs.cache-hit != 'true'
-        run: sbt update
+        run: sbt +update
       - name: Cache dependencies
         uses: actions/cache/save@v3
         if: steps.cache-restore.outputs.cache-hit != 'true'
