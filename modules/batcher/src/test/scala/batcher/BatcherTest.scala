@@ -98,19 +98,17 @@ class BatcherTest extends munit.CatsEffectSuite {
   test("Batcher should run the function only once within the linger time") {
 
     Ref[IO].of(0).flatMap { count =>
-      val batcher = Batcher.resource[IO, String, Int](1, Int.MaxValue, 5.milliseconds) { keys =>
+      val batcher = Batcher.resource[IO, String, Int](1, Int.MaxValue, 50.milliseconds) { keys =>
         count.update(_ + 1).as(keys.map(_.size))
       }
 
-      batcher.use { batcher =>
-        val result = List(
+      TestControl.executeEmbed(batcher.use { batcher =>
+        List(
           batcher.single("foo"),
           batcher.single("bar"),
           batcher.single("baz")
         ).parSequence
-
-        result >> count.get.assertEquals(1)
-      }
+      }) >> count.get.assertEquals(1)
     }
 
   }
