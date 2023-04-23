@@ -1,5 +1,5 @@
 val catsVersion = "2.9.0"
-val catsEffectVersion = "3.4.8"
+val catsEffectVersion = "3.4.9"
 val fs2Version = "3.6.1"
 val munitVersion = "1.0.0-M7"
 val munitCatsEffectVersion = "2.0.0-M3"
