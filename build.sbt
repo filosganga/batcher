@@ -8,10 +8,9 @@ val munitVersion = "1.0.0-M7"
 
 val munitCatsEffectVersion = "2.0.0-M3"
 
-val awsSdkVersion = "2.20.56"
+val awsSdkVersion = "2.20.62"
 
 val logbackVersion = "1.4.7"
-
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
