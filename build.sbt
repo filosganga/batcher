@@ -1,6 +1,6 @@
 val catsVersion = "2.9.0"
 
-val catsEffectVersion = "3.4.10"
+val catsEffectVersion = "3.4.11"
 
 val fs2Version = "3.6.1"
 
@@ -11,7 +11,6 @@ val munitCatsEffectVersion = "2.0.0-M3"
 val awsSdkVersion = "2.20.56"
 
 val logbackVersion = "1.4.7"
-
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
