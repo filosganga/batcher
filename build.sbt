@@ -14,7 +14,7 @@ val logbackVersion = "1.4.7"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-ThisBuild / scalaVersion := "3.2.2"
+ThisBuild / scalaVersion := "3.3.1"
 ThisBuild / crossScalaVersions ++= List("2.13.10", "2.12.17")
 ThisBuild / organization := "com.filippodeluca"
 ThisBuild / organizationName := "Filippo De Luca"
