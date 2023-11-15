@@ -6,7 +6,7 @@ val fs2Version = "3.7.0"
 
 val munitVersion = "1.0.0-M7"
 
-val munitCatsEffectVersion = "2.0.0-M3"
+val munitCatsEffectVersion = "2.0.0-M4"
 
 val awsSdkVersion = "2.20.75"
 
