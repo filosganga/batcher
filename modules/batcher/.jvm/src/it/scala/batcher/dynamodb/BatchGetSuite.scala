@@ -3,13 +3,13 @@ package dynamodb
 
 import java.net.URI
 
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 
 import cats.data.Chain
-import cats.syntax.all._
-import cats.effect._
+import cats.syntax.all.*
+import cats.effect.*
 import cats.effect.std.{Env, UUIDGen}
-import fs2._
+import fs2.*
 
 import software.amazon.awssdk.services.dynamodb.model.{BatchGetItemRequest, BatchWriteItemRequest}
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
@@ -25,8 +25,8 @@ import software.amazon.awssdk.services.dynamodb.model.{
   BillingMode
 }
 
-import JdkConverters._
-import MapCompat._
+import JdkConverters.*
+import MapCompat.*
 
 class BatchGetSuite extends munit.CatsEffectSuite {
 
