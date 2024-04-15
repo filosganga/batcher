@@ -16,11 +16,11 @@
 
 package com.filippodeluca.batcher
 
-import scala.concurrent.duration.*
+import scala.concurrent.duration._
 
-import cats.effect.*
+import cats.effect._
 import cats.effect.testkit.TestControl
-import cats.syntax.all.*
+import cats.syntax.all._
 
 class BatcherTest extends munit.CatsEffectSuite {
 

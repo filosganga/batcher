@@ -16,14 +16,14 @@
 
 package com.filippodeluca.batcher
 
-import scala.concurrent.duration.*
+import scala.concurrent.duration._
 
 import cats.Applicative
-import cats.effect.*
+import cats.effect._
 import cats.effect.std.Queue
-import cats.effect.syntax.all.*
-import cats.syntax.all.*
-import fs2.*
+import cats.effect.syntax.all._
+import cats.syntax.all._
+import fs2._
 
 trait Batcher[F[_], K, V] {
   def single(key: K): F[V]
