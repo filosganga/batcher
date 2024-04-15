@@ -1,21 +1,21 @@
-val catsVersion = "2.9.0"
+val catsVersion = "2.10.0"
 
-val catsEffectVersion = "3.4.11"
+val catsEffectVersion = "3.5.4"
 
-val fs2Version = "3.7.0"
+val fs2Version = "3.10.2"
 
-val munitVersion = "1.0.0-M7"
+val munitVersion = "1.0.0-M11"
 
-val munitCatsEffectVersion = "2.0.0-M3"
+val munitCatsEffectVersion = "2.0.0-M4"
 
-val awsSdkVersion = "2.20.162"
+val awsSdkVersion = "2.25.29"
 
-val logbackVersion = "1.4.14"
+val logbackVersion = "1.5.4"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-ThisBuild / scalaVersion := "3.2.2"
-ThisBuild / crossScalaVersions ++= List("2.13.10", "2.12.17")
+ThisBuild / scalaVersion := "3.3.3"
+ThisBuild / crossScalaVersions ++= List("2.13.13", "2.12.19")
 ThisBuild / organization := "com.filippodeluca"
 ThisBuild / organizationName := "Filippo De Luca"
 ThisBuild / startYear := Some(2023)

@@ -62,10 +62,10 @@ The fourth parameter, `f`, is a function that takes an `IndexedSeq[K]` of keys a
 Here's an example of how to use Batcher:
 
 ````scala
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 
-import cats.effect._
-import cats.syntax.all._
+import cats.effect.*
+import cats.syntax.all.*
 import cats.effect.std.SecureRandom
 import cats.effect.std.Console
 import java.util.concurrent.atomic.AtomicInteger
