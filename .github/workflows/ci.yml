@@ -174,7 +174,7 @@ jobs:
       - run: echo $PGP_SECRET | base64 -d | gpg --import
         env:
           PGP_SECRET: ${{ secrets.PGP_SECRET }}
-      - run: sbt "+publishSigned"
+      - run: sbt "+publishSigned; sonatypeBundleRelease"
         env:
           SONATYPE_USER: ${{ secrets.SONATYPE_USER }}
           SONATYPE_PASS: ${{ secrets.SONATYPE_PASS }}
