@@ -8,7 +8,7 @@ val munitVersion = "1.0.0-M11"
 
 val munitCatsEffectVersion = "2.0.0-M4"
 
-val awsSdkVersion = "2.25.29"
+val awsSdkVersion = "2.25.35"
 
 val logbackVersion = "1.5.4"
 
