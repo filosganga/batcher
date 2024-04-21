@@ -44,7 +44,6 @@ jobs:
             ~/.sbt
           key: sbt-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
       - run: sbt "+scalafmtCheckAll;+headerCheckAll;+Test/compile;+scalafixAll --check"
-      - uses: scalacenter/sbt-dependency-submission@v2
       - uses: alehechka/upload-tartifact@v2
         with:
           name: targets
@@ -154,6 +153,7 @@ jobs:
       - uses: alehechka/download-tartifact@v2
         with:
           name: targets
+      - uses: scalacenter/sbt-dependency-submission@v2
       - run: git fetch --tags
       - run: git status
       - name: Bump version and push tag
