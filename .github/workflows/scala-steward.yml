@@ -14,5 +14,6 @@ jobs:
           github-app-installation-id: ${{ secrets.APP_INSTALLATION_ID }}
           github-app-key: ${{ secrets.APP_PRIVATE_KEY }}
           github-app-auth-only: true
+          author-name: 'scala-steward'
           branches: main
           other-args: '--add-labels'

@@ -1,18 +1,30 @@
 pull_request_rules:
   - name: label scala-steward's PRs
     conditions:
-      - author=filosganga-scala-steward
-
+      - author=scala-steward
     actions:
       label:
         add:
           - dependencies
         remove: []
-  - name: merge scala-steward's PRs
+  - name: approve dependencies PRs
     conditions:
-      - author=filosganga-scala-steward
+      - label=dependencies
+    actions:
+      review:
+        type: APPROVE
+  - name: rebase dependencies PRs
+    conditions:
+      - base=main
+      - "#commits-behind>0"
+    actions:
+      rebase:
+  - name: merge dependencies PRs
+    conditions:
+      - label=dependencies
+      - "#commits-behind==0"
       - status-success=unit-tests-report
       - status-success=integration-tests-report
     actions:
       merge:
-        method: merge
+        method: rebase
