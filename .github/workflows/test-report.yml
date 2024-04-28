@@ -1,0 +1,38 @@
+name: "test-report"
+on:
+  # runs after ci and release workflow
+  workflow_run:
+    workflows:
+      - ci
+      - release
+    types:
+      - completed
+permissions:
+  contents: read
+  actions: read
+  checks: write
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dorny/test-reporter@v1
+        with:
+          artifact: unit-tests-result
+          name: unit-tests-report
+          path: "**/*.xml"
+          list-suites: "all"
+          list-tests: "all"
+          max-annotations: 10
+          fail-on-error: true
+          reporter: java-junit
+
+      - uses: dorny/test-reporter@v1
+        with:
+          artifact: integration-tests-result
+          name: integration-tests-report
+          path: "**/*.xml"
+          list-suites: "all"
+          list-tests: "all"
+          max-annotations: 10
+          fail-on-error: true
+          reporter: java-junit

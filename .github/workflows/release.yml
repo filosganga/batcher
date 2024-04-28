@@ -1,0 +1,57 @@
+name: release
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith( github.ref, 'refs/heads/release/' ) }}
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main' || startsWith( github.ref, 'refs/heads/release/' )
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: "21"
+          distribution: "temurin"
+      - uses: coursier/cache-action@v6
+      - name: build
+        id: build
+        run: sbt "+scalafmtCheckAll;+headerCheckAll;+compile;+Test/compile"
+      - name: test
+        id: test
+        run: sbt "+Test/test"
+      - uses: actions/upload-artifact@v3
+        if: (success() || failure()  && steps.build.conclusion == 'success')
+        with:
+          name: unit-tests-result
+          path: "**/target/test-reports/*.xml"
+      - uses: scalacenter/sbt-dependency-submission@v2
+      - run: git fetch --tags
+      - run: git status
+      - name: Bump version and push tag
+        id: tag-version
+        uses: anothrNick/github-tag-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DEFAULT_BUMP: patch
+          TAG_CONTEXT: branch
+      - name: Create a GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag-version.outputs.new_tag }}
+          name: ${{ steps.tag-version.outputs.new_version }}
+          body: ${{ steps.tag-version.outputs.changelog }}
+      - run: git fetch --tags
+      - run: echo $PGP_SECRET | base64 -d | gpg --import
+        env:
+          PGP_SECRET: ${{ secrets.PGP_SECRET }}
+      - run: sbt "+publishSigned; sonatypeBundleRelease"
+        env:
+          SONATYPE_USER: ${{ secrets.SONATYPE_USER }}
+          SONATYPE_PASS: ${{ secrets.SONATYPE_PASS }}

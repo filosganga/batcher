@@ -66,6 +66,17 @@ ThisBuild / credentials ++= {
 }.toList
 ThisBuild / versionScheme := Some("semver-spec")
 
+val sonatypeSettings = List(
+  // Setting it on ThisBuild does not have any effect
+  sonatypePublishToBundle := {
+    if (isSnapshot.value) {
+      Some(sonatypeSnapshotResolver.value)
+    } else {
+      Some(Resolver.file("sonatype-local-bundle", sonatypeBundleDirectory.value))
+    }
+  }
+)
+
 lazy val root = project
   .in(file("."))
   .aggregate(batcher.js, batcher.jvm, batcher.native)
@@ -83,6 +94,7 @@ lazy val batcher = crossProject(JSPlatform, JVMPlatform, NativePlatform)
         case _ => List.empty
       }
     },
+    sonatypeSettings,
     libraryDependencies ++= List(
       "org.typelevel" %%% "cats-core" % catsVersion,
       "org.typelevel" %%% "cats-effect" % catsEffectVersion,
