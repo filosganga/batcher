@@ -1,29 +1,32 @@
 pull_request_rules:
-  - name: label scala-steward's PRs
+  - name: label dependabot's PRs
     conditions:
-      - author=filosganga-scala-steward[bot]
+      - author=dependabot[bot]
     actions:
       label:
         add:
-          - dependencies
+          - automerge
         remove: []
-  - name: approve dependencies PRs
+  - name: label scala-steward's PRs
     conditions:
-      - label=dependencies
+      - author=filosganga-scala-steward[bot]
+      - or:
+          - label=semver-spec-patch
+          - label=semver-spec-minor
+    actions:
+      label:
+        add:
+          - automerge
+        remove: []
+  - name: approve automerge PRs
+    conditions:
+      - label=automerge
     actions:
       review:
         type: APPROVE
-  - name: rebase dependencies PRs
-    conditions:
-      - base=main
-      - "#commits-behind>0"
-    actions:
-      rebase:
-        bot_account: filosganga-scala-steward[bot]
   - name: merge dependencies PRs
     conditions:
-      - label=dependencies
-      - "#commits-behind==0"
+      - label=automerge
       - status-success=unit-tests-report
       - status-success=integration-tests-report
     actions:
