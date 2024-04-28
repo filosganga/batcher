@@ -1,7 +1,7 @@
 pull_request_rules:
   - name: label scala-steward's PRs
     conditions:
-      - author=scala-steward
+      - author=app/filosganga-scala-steward
     actions:
       label:
         add:
