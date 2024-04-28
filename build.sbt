@@ -4,7 +4,7 @@ val catsEffectVersion = "3.5.4"
 
 val fs2Version = "3.10.2"
 
-val munitVersion = "1.0.0-M11"
+val munitVersion = "1.0.0-RC1"
 
 val munitCatsEffectVersion = "2.0.0-M5"
 
@@ -66,6 +66,17 @@ ThisBuild / credentials ++= {
 }.toList
 ThisBuild / versionScheme := Some("semver-spec")
 
+val sonatypeSettings = List(
+  // Setting it on ThisBuild does not have any effect
+  sonatypePublishToBundle := {
+    if (isSnapshot.value) {
+      Some(sonatypeSnapshotResolver.value)
+    } else {
+      Some(Resolver.file("sonatype-local-bundle", sonatypeBundleDirectory.value))
+    }
+  }
+)
+
 lazy val root = project
   .in(file("."))
   .aggregate(batcher.js, batcher.jvm, batcher.native)
@@ -83,6 +94,7 @@ lazy val batcher = crossProject(JSPlatform, JVMPlatform, NativePlatform)
         case _ => List.empty
       }
     },
+    sonatypeSettings,
     libraryDependencies ++= List(
       "org.typelevel" %%% "cats-core" % catsVersion,
       "org.typelevel" %%% "cats-effect" % catsEffectVersion,
