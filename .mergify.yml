@@ -19,6 +19,7 @@ pull_request_rules:
       - "#commits-behind>0"
     actions:
       rebase:
+        bot_account: filosganga-scala-steward[bot]
   - name: merge dependencies PRs
     conditions:
       - label=dependencies
