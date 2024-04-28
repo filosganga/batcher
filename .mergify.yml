@@ -1,7 +1,18 @@
 pull_request_rules:
-  - name: Automatic merge
-    description: Merge when PR passes all branch protection and has label automerge
+  - name: label scala-steward's PRs
     conditions:
-      - label = automerge
+      - author=filosganga-scala-steward
+
     actions:
-      merge: 
+      label:
+        add:
+          - dependencies
+        remove: []
+  - name: merge scala-steward's PRs
+    conditions:
+      - author=filosganga-scala-steward
+      - status-success=unit-tests-report
+      - status-success=integration-tests-report
+    actions:
+      merge:
+        method: merge

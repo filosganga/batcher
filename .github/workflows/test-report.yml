@@ -19,7 +19,7 @@ jobs:
         with:
           artifact: unit-tests-result
           name: unit-tests-report
-          path: "**/target/test-reports/*.xml"
+          path: "**/.js/target/test-reports/*.xml,**/.jvm/target/test-reports/*.xml,**/.native/target/test-reports/*.xml"
           list-suites: "all"
           list-tests: "all"
           max-annotations: 10
@@ -32,7 +32,7 @@ jobs:
         with:
           artifact: integration-tests-result
           name: integration-tests-report
-          path: "**/target/it-reports/*.xml"
+          path: "**/.js/target/it-reports/*.xml,**/.jvm/target/it-reports/*.xml,**/.native/target/it-reports/*.xml"
           list-suites: "all"
           list-tests: "all"
           max-annotations: 10
