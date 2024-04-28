@@ -12,25 +12,33 @@ permissions:
   actions: read
   checks: write
 jobs:
-  report:
+  unit-test-report:
     runs-on: ubuntu-latest
     steps:
+      - uses: alehechka/download-tartifact@v2
+        with:
+          name: unit-tests-result
       - uses: dorny/test-reporter@v1
         with:
           artifact: unit-tests-result
           name: unit-tests-report
-          path: "**/*.xml"
+          path: "**/target/test-reports/*.xml"
           list-suites: "all"
           list-tests: "all"
           max-annotations: 10
           fail-on-error: true
           reporter: java-junit
-
+  integration-test-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: alehechka/download-tartifact@v2
+        with:
+          name: integration-tests-result
       - uses: dorny/test-reporter@v1
         with:
           artifact: integration-tests-result
           name: integration-tests-report
-          path: "**/*.xml"
+          path: "**/target/it-reports/*.xml"
           list-suites: "all"
           list-tests: "all"
           max-annotations: 10
