@@ -15,9 +15,6 @@ jobs:
   unit-test-report:
     runs-on: ubuntu-latest
     steps:
-      - uses: alehechka/download-tartifact@v2
-        with:
-          name: unit-tests-result
       - uses: dorny/test-reporter@v1
         with:
           artifact: unit-tests-result
@@ -31,9 +28,6 @@ jobs:
   integration-test-report:
     runs-on: ubuntu-latest
     steps:
-      - uses: alehechka/download-tartifact@v2
-        with:
-          name: integration-tests-result
       - uses: dorny/test-reporter@v1
         with:
           artifact: integration-tests-result
