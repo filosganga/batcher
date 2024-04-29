@@ -73,7 +73,7 @@ jobs:
         with:
           name: targets
       - run: sbt +Test/test
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: unit-tests-result
@@ -111,7 +111,7 @@ jobs:
         with:
           name: targets
       - run: sbt +IntegrationTest/test
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: integration-tests-result

@@ -27,7 +27,7 @@ jobs:
       - name: test
         id: test
         run: sbt "+Test/test"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: (success() || failure()  && steps.build.conclusion == 'success')
         with:
           name: unit-tests-result
