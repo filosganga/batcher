@@ -32,7 +32,7 @@ jobs:
         with:
           name: unit-tests-result
           path: "**/target/test-reports/*.xml"
-      - uses: scalacenter/sbt-dependency-submission@v2
+      - uses: scalacenter/sbt-dependency-submission@v3
       - run: git fetch --tags
       - run: git status
       - name: Bump version and push tag
