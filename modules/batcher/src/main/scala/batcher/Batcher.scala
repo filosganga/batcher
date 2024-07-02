@@ -26,7 +26,7 @@ import cats.syntax.all._
 import fs2._
 
 trait Batcher[F[_], K, V] {
-  def single(key: K): F[V]
+  def apply(key: K): F[V]
 }
 
 object Batcher {
@@ -84,7 +84,7 @@ object Batcher {
       .map { resources =>
         new Batcher[F, K, V] {
 
-          def single(key: K): F[V] = {
+          def apply(key: K): F[V] = {
             Deferred[F, Either[Throwable, V]].flatMap { newDeferred =>
               resources.cache
                 .modify { loading =>

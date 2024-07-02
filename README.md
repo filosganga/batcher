@@ -1,29 +1,31 @@
 # Batcher Library
 
-In a distributed system, it is often necessary to handle multiple concurrent requests for the same or similar resources. However, processing each request individually can lead to unnecessary overhead, especially if the requests are disjointed and do not benefit from sharing resources or operations. Additionally, in certain scenarios, the system may experience spikes of traffic that can overwhelm the available resources and cause performance issues.
+In a distributed system, it is often necessary to handle multiple concurrent requests for the same or similar resources. However, processing each request individually can lead to unnecessary overhead, especially if the requests are disjointed and do not benefit from sharing resources or operations. Additionally, in certain scenarios, the system may experience spikes in traffic that can overwhelm the available resources and cause performance issues.
 
-The Batcher library aims to address these issues by providing a mechanism to batch similar requests together, reducing the overall number of operations and improving performance. The library offers a simple API for processing requests in batches and allows developers to configure the batch size, maximum concurrency, and the duration to wait for additional requests before processing a batch.
+The Batcher library aims to address these issues by providing a mechanism to batch similar requests together, reducing the overall number of operations and improving performance. The library offers a simple API for processing requests in batches. It allows developers to configure the batch size, maximum concurrency, and the duration to wait for additional requests before processing a batch.
 
-By batching requests, the library can reduce the number of operations needed to process requests and optimize resource utilization. This is particularly useful in scenarios where the system receives many small, disjointed requests, such as HTTP APIs. The Batcher library provides a solution to these problems by enabling developers to improve the performance of their distributed systems while keeping the code simple and concise.
+The library can reduce the operations needed to process requests and optimize resource utilization. This ability is handy when the system receives many small, disjointed requests, such as HTTP APIs. The Batcher library provides a solution to these problems by enabling developers to improve the performance of their distributed systems while keeping the code simple and concise.
 
 ## Features
 
-- Batching requests: The library allows you to batch together requests of the same type, improving efficiency by reducing the overhead of making individual requests.
+- **Batching requests**: The library allows you to batch together requests of the same type, improving efficiency by reducing the overhead of making individual requests.
 
-- Concurrency control: You can specify the maximum number of concurrent requests that can be executed, which allows you to control the load on the system.
+- **Concurrency control**: You can specify the maximum number of concurrent requests that can be executed, which allows you to control the load on the system.
 
-- Lingering: The library allows you to specify a duration for how long the Batcher should wait before sending a batch of requests to the server. This can help reduce the number of unnecessary requests by allowing time for other requests to be added to the batch.
+- **Lingering**: The library allows you to specify a duration for how long the Batcher should wait before sending a batch of requests to the server. This can help reduce the number of unnecessary requests by allowing time for other requests to be added to the batch.
 
-- Result caching: The library caches the results of in-flight requests, so if the same request is made again, it can be returned immediately without needing to execute the request again.
+- **Result caching**: The library caches the results of in-flight requests, so if the same request is made again, it can be returned immediately without needing to execute the request again.
 
-It is available in Scala-JS, Scala-Native, and Scala (2.12, 2.13, 3) via Maven Central. 
 
 ## Installation
-To use the Batcher library in your project, add the following dependency to your `build.sbt` file:
+
+Add the following dependency to your build to use the Batcher library in your project `build.sbt` file:
 
 ````sbt
 libraryDependencies += "com.filippodeluca" %%% "batcher" % "<latest-version>"
 ````
+
+It is available in Scala-JS, Scala-Native, and Scala (2.12, 2.13, 3).
 
 Replace `latest-version` with the latest version of the library available on Maven Central.
 
@@ -58,7 +60,18 @@ This method takes three parameters:
 
 The fourth parameter, `f`, is a function that takes an `IndexedSeq[K]` of keys and returns an `F[IndexedSeq[V]]` of results in the same order.
 
+## Recommended settings
+
+"The behavior of the batcher is heavily influenced by three key configuration parameters:
+
+- **`maxConcurrency`**: This parameter determines the maximum number of parallel processes the batcher can handle simultaneously. It should be set based on the underlying system's capacity to manage concurrent operations efficiently. A good value here is usually between 16 and 500 but can hugely vary with your system capabilities.
+- **`maxBatchSize`**: Specifies the maximum number of elements to include in each batch request. This value should be aligned with the capabilities of the underlying system to process batch requests efficiently. A good value here is usually in the order of thousands.
+- **`linger`**: Defines the maximum duration the batcher waits before sending a batch request after receiving the last element. It should reflect the acceptable latency for the client or system utilizing the batcher. A good value here is usually between 50 and 300 milliseconds.
+ 
+For example, when interfacing with AWS DynamoDB, setting maxConcurrency to the maximum allowed connections by the DynamoDB HTTP client, maxBatchSize to the DynamoDB BatchGet limit (typically 100), and linger to a value representing acceptable latency for the client can optimize the batcher's performance for such use cases."
+
 ## Example
+
 Here's an example of how to use Batcher:
 
 ````scala
@@ -118,6 +131,6 @@ object Example extends IOApp.Simple {
 
 ````
 
-This example first generates two vectors of 100 random integers. Then, it pairs up the corresponding elements of both vectors using the zip method and passes them to the `Batcher.single` method, which sums them up. Finally, it prints the result.
+This example first generates two vectors of 100 random integers. Then, it pairs up the corresponding elements of both vectors using the zip method and passes them to the `Batcher.apply` method, which sums them up. Finally, it prints the result.
 
-There is also an [integration test based on DynamoDb](https://github.com/filosganga/batcher/blob/154c81f09d2f71cf8c3e7c064415ec25a2df96e6/modules/batcher/src/main/scala/batcher/Batcher.scala), based on a real-world use case, that provides a practical demonstration of how to utilize the AWS SDK v2 to efficiently handle GetItem and PutItem requests together, which can be particularly useful in real-world scenarios with high data volumes. By utilizing DynamoDb as the underlying storage engine, the test also highlights the benefits of leveraging cloud-based services for scalable and performant data processing. 
+There is also an [integration test based on DynamoDb](https://github.com/filosganga/batcher/blob/154c81f09d2f71cf8c3e7c064415ec25a2df96e6/modules/batcher/src/main/scala/batcher/Batcher.scala), based on a real-world use case, that provides a practical demonstration of how to utilize the AWS SDK v2 to efficiently handle GetItem and PutItem requests together, which can be particularly useful in real-world scenarios with high data volumes. Utilizing DynamoDb as the underlying storage engine, the test also highlights the benefits of leveraging cloud-based services for scalable and performant data processing. 
