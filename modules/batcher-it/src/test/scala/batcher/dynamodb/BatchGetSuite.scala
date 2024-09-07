@@ -29,8 +29,8 @@ import fs2.*
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import software.amazon.awssdk.services.dynamodb.model.*
 
-import JdkConverters._
-import MapCompat._
+import JdkConverters.*
+import MapCompat.*
 
 class BatchGetSuite extends munit.CatsEffectSuite {
 
