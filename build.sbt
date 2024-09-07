@@ -20,7 +20,6 @@ ThisBuild / organization := "com.filippodeluca"
 ThisBuild / organizationName := "Filippo De Luca"
 ThisBuild / startYear := Some(2023)
 
-ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.6.0"
 ThisBuild / semanticdbEnabled := true
 ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
 ThisBuild / dynverSonatypeSnapshots := true
