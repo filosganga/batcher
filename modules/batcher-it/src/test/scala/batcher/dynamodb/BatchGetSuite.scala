@@ -102,7 +102,7 @@ class BatchGetSuite extends munit.CatsEffectSuite {
                 val responses = response.responses
 
                 val output =
-                  Chunk.vector(responses.asScala.toVector.flatMap { case (table, items) =>
+                  Chunk.from(responses.asScala.toVector.flatMap { case (table, items) =>
                     val tableKeys = tablesKeys.get(table).toList.flatten
                     items.asScala.map { item =>
                       (

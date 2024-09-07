@@ -15,7 +15,7 @@ val logbackVersion = "1.5.8"
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / scalaVersion := "3.3.3"
-ThisBuild / crossScalaVersions ++= List("2.13.13", "2.12.19")
+ThisBuild / crossScalaVersions ++= List("2.13.14", "2.12.20")
 ThisBuild / organization := "com.filippodeluca"
 ThisBuild / organizationName := "Filippo De Luca"
 ThisBuild / startYear := Some(2023)
@@ -79,7 +79,7 @@ val sonatypeSettings = List(
 
 lazy val root = project
   .in(file("."))
-  .aggregate(batcher.js, batcher.jvm, batcher.native)
+  .aggregate(batcher.js, batcher.jvm, batcher.native, batcherIt)
   .settings(publish / skip := true)
 
 lazy val batcher = crossProject(JSPlatform, JVMPlatform, NativePlatform)
@@ -100,31 +100,39 @@ lazy val batcher = crossProject(JSPlatform, JVMPlatform, NativePlatform)
       "org.typelevel" %%% "cats-effect" % catsEffectVersion,
       "org.typelevel" %%% "cats-effect-testkit" % catsEffectVersion % Test,
       "co.fs2" %%% "fs2-core" % fs2Version,
-      "org.scalameta" %%% "munit" % munitVersion % s"$Test;$IntegrationTest",
-      "org.typelevel" %%% "munit-cats-effect" % munitCatsEffectVersion % s"$Test;$IntegrationTest"
+      "org.scalameta" %%% "munit" % munitVersion % Test,
+      "org.typelevel" %%% "munit-cats-effect" % munitCatsEffectVersion % Test
     )
   )
   .jsSettings(
     scalaJSUseMainModuleInitializer := false
   )
-  .jsSettings(inConfig(IntegrationTest)(ScalaJSPlugin.testConfigSettings): _*)
-  // add the `shared` folder to source directories
+
+lazy val batcherIt = project
+  .in(file("modules/batcher-it"))
+  .dependsOn(batcher.jvm)
   .settings(
-    IntegrationTest / unmanagedSourceDirectories ++=
-      CrossType.Full.sharedSrcDir(baseDirectory.value, IntegrationTest.name).toSeq
-  )
-  .configs(IntegrationTest)
-  .settings(inConfig(IntegrationTest)(Defaults.testSettings))
-  .jvmSettings(
-    IntegrationTest / testOptions += Tests.Setup(() => {
-      sys.props.update("logback.configurationFile", "logback-it.xml")
+    name := "batcher-it",
+    scalacOptions -= "-Xfatal-warnings",
+    scalacOptions ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, _)) => List("-Xsource:3")
+        case _ => List.empty
+      }
+    },
+    libraryDependencies ++= List(
+      "org.scalameta" %%% "munit" % munitVersion % Test,
+      "org.typelevel" %%% "munit-cats-effect" % munitCatsEffectVersion % Test,
+      "software.amazon.awssdk" % "dynamodb" % awsSdkVersion % Test,
+      "ch.qos.logback" % "logback-classic" % logbackVersion % Test
+    ),
+    publish / skip := true,
+    Test / fork := true,
+    Test / testForkedParallel := true,
+    Test / testOptions += Tests.Setup(() => {
       sys.props.update(
         "software.amazon.awssdk.http.async.service.impl",
         "software.amazon.awssdk.http.nio.netty.NettySdkAsyncHttpService"
       )
-    }),
-    libraryDependencies ++= List(
-      "software.amazon.awssdk" % "dynamodb" % awsSdkVersion % IntegrationTest,
-      "ch.qos.logback" % "logback-classic" % logbackVersion % IntegrationTest
-    )
+    })
   )
