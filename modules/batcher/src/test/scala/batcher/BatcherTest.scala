@@ -16,11 +16,11 @@
 
 package com.filippodeluca.batcher
 
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 
-import cats.effect._
+import cats.effect.*
 import cats.effect.testkit.TestControl
-import cats.syntax.all._
+import cats.syntax.all.*
 
 class BatcherTest extends munit.CatsEffectSuite {
 
@@ -31,9 +31,9 @@ class BatcherTest extends munit.CatsEffectSuite {
 
     batcher.use { batcher =>
       List(
-        batcher.single("foo"),
-        batcher.single("bar"),
-        batcher.single("baz")
+        batcher("foo"),
+        batcher("bar"),
+        batcher("baz")
       ).parTraverse(identity)
         .map { xs =>
           xs.map(x => assertEquals(x, 3))
@@ -48,9 +48,9 @@ class BatcherTest extends munit.CatsEffectSuite {
 
     batcher.use { batcher =>
       List(
-        batcher.single("a"),
-        batcher.single("ab"),
-        batcher.single("abc")
+        batcher("a"),
+        batcher("ab"),
+        batcher("abc")
       ).parTraverse(identity)
         .map { xs =>
           xs.zipWithIndex.map { case (x, y) =>
@@ -67,7 +67,7 @@ class BatcherTest extends munit.CatsEffectSuite {
 
     batcher.use { batcher =>
       List
-        .fill(1000)(batcher.single("foo"))
+        .fill(1000)(batcher("foo"))
         .parTraverse(identity)
         .map { xs =>
           xs.map(x => assertEquals(x, 3))
@@ -82,9 +82,9 @@ class BatcherTest extends munit.CatsEffectSuite {
 
     batcher.use { batcher =>
       val result = List(
-        batcher.single("a").attempt,
-        batcher.single("ab").attempt,
-        batcher.single("abc").attempt
+        batcher("a").attempt,
+        batcher("ab").attempt,
+        batcher("abc").attempt
       ).sequence
 
       result.map { xs =>
@@ -104,9 +104,9 @@ class BatcherTest extends munit.CatsEffectSuite {
 
       TestControl.executeEmbed(batcher.use { batcher =>
         List(
-          batcher.single("foo"),
-          batcher.single("bar"),
-          batcher.single("baz")
+          batcher("foo"),
+          batcher("bar"),
+          batcher("baz")
         ).parSequence
       }) >> count.get.assertEquals(1)
     }
@@ -122,9 +122,9 @@ class BatcherTest extends munit.CatsEffectSuite {
 
       TestControl.executeEmbed(batcher.use { batcher =>
         List(
-          batcher.single("foo"),
-          batcher.single("bar"),
-          batcher.single("baz").delayBy(75.milliseconds)
+          batcher("foo"),
+          batcher("bar"),
+          batcher("baz").delayBy(75.milliseconds)
         ).parSequence
       }) >> count.get.assertEquals(2)
     }
@@ -155,7 +155,7 @@ class BatcherTest extends munit.CatsEffectSuite {
       TestControl.executeEmbed(batcher.use { batcher =>
         (0 until 100)
           .map { index =>
-            batcher.single(s"test-$index")
+            batcher(s"test-$index")
           }
           .toList
           .parSequence

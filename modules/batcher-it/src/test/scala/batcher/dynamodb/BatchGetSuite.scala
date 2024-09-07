@@ -18,19 +18,19 @@ package com.filippodeluca.batcher
 package dynamodb
 
 import java.net.URI
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 
 import cats.data.Chain
-import cats.effect._
+import cats.effect.*
 import cats.effect.std.{Env, UUIDGen}
-import cats.syntax.all._
-import fs2._
+import cats.syntax.all.*
+import fs2.*
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
-import software.amazon.awssdk.services.dynamodb.model._
+import software.amazon.awssdk.services.dynamodb.model.*
 
-import JdkConverters._
-import MapCompat._
+import JdkConverters.*
+import MapCompat.*
 
 class BatchGetSuite extends munit.CatsEffectSuite {
 
@@ -62,17 +62,30 @@ class BatchGetSuite extends munit.CatsEffectSuite {
           IO.fromCompletableFuture(
             IO(
               dynamoDbClient.createTable(
-                _.tableName(tableName)
+                CreateTableRequest
+                  .builder()
+                  .tableName(tableName)
                   .billingMode(BillingMode.PAY_PER_REQUEST)
                   .attributeDefinitions(attributeDefinitions: _*)
                   .keySchema(keySchema: _*)
+                  .build()
               )
             )
           ).map { response =>
             response.tableDescription
           }
         } { td =>
-          IO.fromCompletableFuture(IO(dynamoDbClient.deleteTable(_.tableName(td.tableName)))).void
+          IO.fromCompletableFuture(
+            IO(
+              dynamoDbClient
+                .deleteTable(
+                  DeleteTableRequest
+                    .builder()
+                    .tableName(td.tableName)
+                    .build()
+                )
+            )
+          ).void
         }
 
     }
@@ -152,7 +165,10 @@ class BatchGetSuite extends munit.CatsEffectSuite {
         .map { case (table, putItems) =>
           val requests = putItems
             .map { putItem =>
-              WriteRequest.builder().putRequest(_.item(putItem.item.asJava).build).build()
+              WriteRequest
+                .builder()
+                .putRequest(PutRequest.builder().item(putItem.item.asJava).build())
+                .build()
             }
             .toList
             .asJava
@@ -235,8 +251,8 @@ class BatchGetSuite extends munit.CatsEffectSuite {
         (putItem, getItem)
       }
 
-      putItems.parTraverse(putItemBatcher.single) *> getItems
-        .parTraverse(getItemBatcher.single)
+      putItems.parTraverse(putItemBatcher.apply) *> getItems
+        .parTraverse(getItemBatcher.apply)
         .map(_.toList.toSet)
         .assertEquals(expectedItems)
   }

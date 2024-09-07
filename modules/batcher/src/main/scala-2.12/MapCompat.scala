@@ -18,7 +18,7 @@ package com.filippodeluca.batcher
 
 import scala.collection.IterableView
 import scala.collection.immutable.Map
-import scala.collection.mutable.{Map => MutMap}
+import scala.collection.mutable.Map as MutMap
 
 object MapCompat {
   implicit class RichMapIterableView[K, V](xs: IterableView[(K, V), Map[K, V]]) {
