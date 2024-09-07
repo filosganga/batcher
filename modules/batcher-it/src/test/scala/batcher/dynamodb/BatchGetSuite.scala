@@ -1,32 +1,36 @@
+/*
+ * Copyright 2023 Filippo De Luca
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.filippodeluca.batcher
 package dynamodb
 
 import java.net.URI
-
-import scala.concurrent.duration.*
+import scala.concurrent.duration._
 
 import cats.data.Chain
-import cats.syntax.all.*
-import cats.effect.*
+import cats.effect._
 import cats.effect.std.{Env, UUIDGen}
-import fs2.*
+import cats.syntax.all._
+import fs2._
 
-import software.amazon.awssdk.services.dynamodb.model.{BatchGetItemRequest, BatchWriteItemRequest}
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
-import software.amazon.awssdk.services.dynamodb.model.{
-  KeysAndAttributes,
-  AttributeValue,
-  AttributeDefinition,
-  KeySchemaElement,
-  TableDescription,
-  ScalarAttributeType,
-  KeyType,
-  WriteRequest,
-  BillingMode
-}
+import software.amazon.awssdk.services.dynamodb.model._
 
-import JdkConverters.*
-import MapCompat.*
+import JdkConverters._
+import MapCompat._
 
 class BatchGetSuite extends munit.CatsEffectSuite {
 
@@ -95,7 +99,7 @@ class BatchGetSuite extends munit.CatsEffectSuite {
           }
           .asJava
 
-        val itemsByGetItem = Stream
+        val itemsByGetItem = fs2.Stream
           .unfoldLoopEval(BatchGetItemRequest.builder.requestItems(requestItems).build()) {
             request =>
               IO.fromCompletableFuture(IO(dynamoDbClient.batchGetItem(request))).map { response =>
@@ -157,7 +161,7 @@ class BatchGetSuite extends munit.CatsEffectSuite {
         }
         .asJava
 
-      Stream
+      fs2.Stream
         .unfoldLoopEval(BatchWriteItemRequest.builder().requestItems(requestItems).build()) {
           request =>
             IO.fromCompletableFuture(IO(dynamoDbClient.batchWriteItem(request))).map { response =>
