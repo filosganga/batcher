@@ -21,17 +21,8 @@ jobs:
           java-version: "21"
           distribution: "temurin"
       - uses: coursier/cache-action@v6
-      - name: build
-        id: build
-        run: sbt "+scalafmtCheckAll;+headerCheckAll;+compile;+Test/compile"
-      - name: test
-        id: test
-        run: sbt "+Test/test"
-      - uses: actions/upload-artifact@v4
-        if: (success() || failure()  && steps.build.conclusion == 'success')
-        with:
-          name: unit-tests-result
-          path: "**/target/test-reports/*.xml"
+      - run: sbt "+scalafmtCheckAll;+headerCheckAll;+Test/compile;+scalafixAll --check;+test"
+
       - uses: scalacenter/sbt-dependency-submission@v3
       - run: git fetch --tags
       - run: git status
