@@ -9,7 +9,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref == 'refs/heads/main' || startsWith( github.ref, 'refs/heads/release/' ) }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith( github.ref, 'refs/heads/release/' ) }}
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
