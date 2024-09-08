@@ -11,6 +11,16 @@ jobs:
   release:
     if: github.ref == 'refs/heads/main' || startsWith( github.ref, 'refs/heads/release/' )
     runs-on: ubuntu-latest
+    env:
+      DYNAMODB_ENDPOINT: "http://localhost:8000"
+      AWS_REGION: "eu-west-1"
+      AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
+      AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    services:
+      dynamodb:
+        image: amazon/dynamodb-local:latest
+        ports:
+          - "8000:8000"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,7 +33,6 @@ jobs:
       - uses: coursier/cache-action@v6
       - run: sbt "+scalafmtCheckAll;+headerCheckAll;+Test/compile;+scalafixAll --check;+test"
 
-      - uses: scalacenter/sbt-dependency-submission@v3
       - run: git fetch --tags
       - run: git status
       - name: Bump version and push tag
