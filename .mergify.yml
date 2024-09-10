@@ -21,16 +21,14 @@ pull_request_rules:
   - name: approve automerge PRs
     conditions:
       - label=automerge
-      - status-success=unit-tests-report
-      - status-success=integration-tests-report
+      - status-success=test
     actions:
       review:
         type: APPROVE
   - name: merge dependencies PRs
     conditions:
       - label=automerge
-      - status-success=unit-tests-report
-      - status-success=integration-tests-report
+      - "#approved-reviews-by >= 1"
     actions:
       merge:
         method: rebase
