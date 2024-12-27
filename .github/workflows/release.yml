@@ -30,6 +30,7 @@ jobs:
         with:
           java-version: "21"
           distribution: "temurin"
+      - uses: sbt/setup-sbt@v1
       - uses: coursier/cache-action@v6
       - run: sbt "+scalafmtCheckAll;+headerCheckAll;+Test/compile;+scalafixAll --check;+test"
 

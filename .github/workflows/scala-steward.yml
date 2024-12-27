@@ -8,6 +8,13 @@ jobs:
   scala-steward:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: sbt
+      - uses: sbt/setup-sbt@v1
       - uses: scala-steward-org/scala-steward-action@v2
         with:
           github-app-id: ${{ secrets.APP_ID }}
@@ -15,4 +22,4 @@ jobs:
           github-app-key: ${{ secrets.APP_PRIVATE_KEY }}
           github-app-auth-only: true
           branches: main
-          other-args: '--add-labels'
+          other-args: "--add-labels"
