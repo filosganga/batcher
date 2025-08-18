@@ -22,7 +22,7 @@ jobs:
         ports:
           - "8000:8000"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: "0"
       - name: Set up JDK
