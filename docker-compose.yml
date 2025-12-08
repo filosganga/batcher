@@ -1,6 +1,13 @@
 services:
   dynamodb:
-    image: amazon/dynamodb-local:latest
+    image: amazon/dynamodb-local:3.1.0
     ports:
       - "8000:8000"
-    command: "-jar DynamoDBLocal.jar -sharedDb"
+    command: "-jar DynamoDBLocal.jar -sharedDb -disableTelemetry -inMemory -delayTransientStatuses"
+    healthcheck:
+      test:
+        - "CMD-SHELL"
+        - "echo > /dev/tcp/localhost/8000" # TCP check with /dev/tcp
+      interval: 2s
+      timeout: 5s
+      retries: 10

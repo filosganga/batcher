@@ -1,3 +1,5 @@
+import org.typelevel.scalacoptions.ScalacOptions
+
 val catsVersion = "2.11.0"
 
 val catsEffectVersion = "3.6.3"
@@ -8,21 +10,20 @@ val munitVersion = "1.0.0"
 
 val munitCatsEffectVersion = "2.1.0"
 
-val awsSdkVersion = "2.30.38"
+val awsSdkVersion = "2.40.3"
 
 val logbackVersion = "1.5.21"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-ThisBuild / scalaVersion := "3.3.7"
-ThisBuild / crossScalaVersions ++= List("2.13.18", "2.12.20")
+ThisBuild / scalaVersion := "3.7.4"
+ThisBuild / crossScalaVersions ++= List("3.3.7", "2.13.18")
 ThisBuild / organization := "com.filippodeluca"
 ThisBuild / organizationName := "Filippo De Luca"
 ThisBuild / startYear := Some(2023)
 
 ThisBuild / semanticdbEnabled := true
 ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
-ThisBuild / dynverSonatypeSnapshots := true
 
 ThisBuild / developers := List(
   Developer(
@@ -48,9 +49,11 @@ ThisBuild / scmInfo := Some(
   )
 )
 
+ThisBuild / dynverSonatypeSnapshots := true
+ThisBuild / versionScheme := Some("semver-spec")
 ThisBuild / pomIncludeRepository := { _ => false }
 ThisBuild / publishMavenStyle := true
-ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
+ThisBuild / sonatypeCredentialHost := xerial.sbt.Sonatype.sonatypeCentralHost
 ThisBuild / publishTo := sonatypePublishToBundle.value
 ThisBuild / credentials ++= {
   for {
@@ -58,23 +61,11 @@ ThisBuild / credentials ++= {
     password <- sys.env.get("SONATYPE_PASS")
   } yield Credentials(
     "Sonatype Nexus Repository Manager",
-    "s01.oss.sonatype.org",
+    "central.sonatype.com",
     usr,
     password
   )
 }.toList
-ThisBuild / versionScheme := Some("semver-spec")
-
-val sonatypeSettings = List(
-  // Setting it on ThisBuild does not have any effect
-  sonatypePublishToBundle := {
-    if (isSnapshot.value) {
-      Some(sonatypeSnapshotResolver.value)
-    } else {
-      Some(Resolver.file("sonatype-local-bundle", sonatypeBundleDirectory.value))
-    }
-  }
-)
 
 lazy val root = project
   .in(file("."))
@@ -86,14 +77,9 @@ lazy val batcher = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("modules/batcher"))
   .settings(
     name := "batcher",
-    scalacOptions -= "-Xfatal-warnings",
-    scalacOptions ++= {
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, _)) => List("-Xsource:3")
-        case _ => List.empty
-      }
-    },
-    sonatypeSettings,
+    tpolecatScalacOptions ++= Set(
+      ScalacOptions.source3
+    ),
     libraryDependencies ++= List(
       "org.typelevel" %%% "cats-core" % catsVersion,
       "org.typelevel" %%% "cats-effect" % catsEffectVersion,
@@ -112,13 +98,9 @@ lazy val batcherIt = project
   .dependsOn(batcher.jvm)
   .settings(
     name := "batcher-it",
-    scalacOptions -= "-Xfatal-warnings",
-    scalacOptions ++= {
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, _)) => List("-Xsource:3")
-        case _ => List.empty
-      }
-    },
+    tpolecatScalacOptions ++= Set(
+      ScalacOptions.source3
+    ),
     libraryDependencies ++= List(
       "org.scalameta" %%% "munit" % munitVersion % Test,
       "org.typelevel" %%% "munit-cats-effect" % munitCatsEffectVersion % Test,

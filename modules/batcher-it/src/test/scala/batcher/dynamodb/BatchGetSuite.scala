@@ -66,8 +66,8 @@ class BatchGetSuite extends munit.CatsEffectSuite {
                   .builder()
                   .tableName(tableName)
                   .billingMode(BillingMode.PAY_PER_REQUEST)
-                  .attributeDefinitions(attributeDefinitions: _*)
-                  .keySchema(keySchema: _*)
+                  .attributeDefinitions(attributeDefinitions*)
+                  .keySchema(keySchema*)
                   .build()
               )
             )
@@ -107,7 +107,7 @@ class BatchGetSuite extends munit.CatsEffectSuite {
               getItem.key.asJava
             }
 
-            table -> KeysAndAttributes.builder().keys(keys: _*).build()
+            table -> KeysAndAttributes.builder().keys(keys*).build()
           }
           .asJava
 

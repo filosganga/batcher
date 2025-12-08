@@ -20,11 +20,6 @@ jobs:
       AWS_REGION: "eu-west-1"
       AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
       AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-    services:
-      dynamodb:
-        image: amazon/dynamodb-local:latest
-        ports:
-          - "8000:8000"
     steps:
       - uses: actions/checkout@v6
       - name: Set up JDK
@@ -52,4 +47,6 @@ jobs:
             ~/.ivy2/cache
             ~/.sbt
           key: sbt-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
+      - name: Start DynamoDB Local
+        run: docker compose up -d --wait dynamodb
       - run: sbt "+scalafmtCheckAll;+headerCheckAll;+Test/compile;+scalafixAll --check;+test"
