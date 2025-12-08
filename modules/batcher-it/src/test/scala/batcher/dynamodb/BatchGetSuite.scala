@@ -100,7 +100,6 @@ class BatchGetSuite extends munit.CatsEffectSuite {
   ): Resource[IO, Batcher[IO, GetItem, Option[Map[String, AttributeValue]]]] = {
     Batcher.resource[IO, GetItem, Option[Map[String, AttributeValue]]](16, 100, 50.milliseconds) {
       getItems =>
-
         val requestItems = getItems
           .groupBy(_.table)
           .map { case (table, getItems) =>
@@ -159,7 +158,6 @@ class BatchGetSuite extends munit.CatsEffectSuite {
       dynamoDbClient: DynamoDbAsyncClient
   ): Resource[IO, Batcher[IO, PutItem, Unit]] = {
     Batcher.resource[IO, PutItem, Unit](16, 25, 50.milliseconds) { putItems =>
-
       val requestItems = putItems
         .groupBy(_.table)
         .map { case (table, putItems) =>
@@ -181,7 +179,6 @@ class BatchGetSuite extends munit.CatsEffectSuite {
         .unfoldLoopEval(BatchWriteItemRequest.builder().requestItems(requestItems).build()) {
           request =>
             IO.fromCompletableFuture(IO(dynamoDbClient.batchWriteItem(request))).map { response =>
-
               val nextS =
                 if (response.hasUnprocessedItems && !response.unprocessedItems.isEmpty) {
                   request.toBuilder.requestItems(response.unprocessedItems).build.some
@@ -233,7 +230,6 @@ class BatchGetSuite extends munit.CatsEffectSuite {
       val expectedItems = items.map(_.some).toSet
 
       val (putItems, getItems) = items.foldMap { item =>
-
         val putItem = Chain.one(
           PutItem(
             table.tableName,
