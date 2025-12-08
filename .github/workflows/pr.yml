@@ -1,0 +1,55 @@
+name: pr
+
+run-name: "pr-${{github.event.pull_request.number}}"
+
+on:
+  pull_request:
+
+concurrency:
+  group: pr-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      DYNAMODB_ENDPOINT: "http://localhost:8000"
+      AWS_REGION: "eu-west-1"
+      AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
+      AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    services:
+      dynamodb:
+        image: amazon/dynamodb-local:latest
+        ports:
+          - "8000:8000"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+      - uses: sbt/setup-sbt@v1
+      - name: Restore dependencies
+        id: cache-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.ivy2/cache
+            ~/.sbt
+          key: sbt-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
+      - name: Update dependencies
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+        run: sbt +update
+      - name: Cache dependencies
+        uses: actions/cache/save@v4
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+        with:
+          path: |
+            ~/.ivy2/cache
+            ~/.sbt
+          key: sbt-${{ hashFiles('**/*.sbt', 'project/build.properties') }}
+      - run: sbt "+scalafmtCheckAll;+headerCheckAll;+Test/compile;+scalafixAll --check;+test"
