@@ -10,12 +10,12 @@ val munitCatsEffectVersion = "2.1.0"
 
 val awsSdkVersion = "2.30.38"
 
-val logbackVersion = "1.5.16"
+val logbackVersion = "1.5.21"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-ThisBuild / scalaVersion := "3.3.5"
-ThisBuild / crossScalaVersions ++= List("2.13.16", "2.12.20")
+ThisBuild / scalaVersion := "3.3.7"
+ThisBuild / crossScalaVersions ++= List("2.13.18", "2.12.20")
 ThisBuild / organization := "com.filippodeluca"
 ThisBuild / organizationName := "Filippo De Luca"
 ThisBuild / startYear := Some(2023)
