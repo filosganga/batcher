@@ -136,7 +136,6 @@ class BatcherTest extends munit.CatsEffectSuite {
 
     Ref[IO].of((0, 0)).flatMap { count =>
       val batcher = Batcher.resource[IO, String, Int](maxConcurrency, 3, 50.milliseconds) { keys =>
-
         val increase = count.update { case (curr, max) =>
           val newCurr = curr + 1
           val newMax = Math.max(max, newCurr)
