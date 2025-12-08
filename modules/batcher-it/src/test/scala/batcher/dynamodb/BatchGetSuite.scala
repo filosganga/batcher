@@ -19,6 +19,7 @@ package dynamodb
 
 import java.net.URI
 import scala.concurrent.duration.*
+import scala.jdk.CollectionConverters.*
 
 import cats.data.Chain
 import cats.effect.*
@@ -28,8 +29,6 @@ import fs2.*
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import software.amazon.awssdk.services.dynamodb.model.*
-
-import scala.jdk.CollectionConverters.*
 
 class BatchGetSuite extends munit.CatsEffectSuite {
 
