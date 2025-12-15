@@ -30,7 +30,7 @@ jobs:
       - uses: sbt/setup-sbt@v1
       - name: Restore dependencies
         id: cache-restore
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: |
             ~/.ivy2/cache
@@ -40,7 +40,7 @@ jobs:
         if: steps.cache-restore.outputs.cache-hit != 'true'
         run: sbt +update
       - name: Cache dependencies
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         if: steps.cache-restore.outputs.cache-hit != 'true'
         with:
           path: |
