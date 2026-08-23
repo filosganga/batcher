@@ -2,7 +2,7 @@ import org.typelevel.scalacoptions.ScalacOptions
 
 val catsVersion = "2.11.0"
 
-val catsEffectVersion = "3.6.3"
+val catsEffectVersion = "3.6.4"
 
 val fs2Version = "3.12.2"
 
