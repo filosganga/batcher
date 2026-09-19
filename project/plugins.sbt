@@ -10,7 +10,7 @@ addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.1.1")
 
 addSbtPlugin("org.typelevel" % "sbt-tpolecat" % "0.5.7")
 
-addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.3.2")
+addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.4.0")
 
 addSbtPlugin("org.portable-scala" % "sbt-scala-native-crossproject" % "1.4.0")
 
