@@ -6,7 +6,7 @@ addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.13.2")
 
 addSbtPlugin("com.github.sbt" % "sbt-header" % "5.11.0")
 
-addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.1.1")
+addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.2.0")
 
 addSbtPlugin("org.typelevel" % "sbt-tpolecat" % "0.5.7")
 
